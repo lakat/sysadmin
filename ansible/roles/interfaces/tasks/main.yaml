@@ -1,0 +1,18 @@
+---
+- name: Set interfaces file
+  copy:
+    content: "{{ interfaces_file_contents }}"
+    dest: /etc/network/interfaces
+
+- name: Remove resolvconf package
+  apt:
+      name: resolvconf
+      state: absent
+      purge: yes
+
+- name: Set resolv.conf
+  template:
+      src: resolv.conf.j2
+      dest: /etc/resolv.conf
+      owner: root
+      mode: 0644
