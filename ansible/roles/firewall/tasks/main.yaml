@@ -1,0 +1,38 @@
+---
+- name: Install Shoreline Firewall
+  apt:
+      name: shorewall
+      state: present
+
+- name: Set Shorewall Configuration Files
+  template:
+      src: "{{ item }}.j2"
+      dest: "/etc/shorewall/{{ item }}"
+      owner: root
+      mode: 0640
+  with_items:
+    - interfaces
+    - masq
+    - policy
+    - rules
+    - shorewall.conf
+    - zones
+  notify:
+    - restart shorewall
+
+- name: Enable Shorewall Startup
+  lineinfile:
+      dest: /etc/default/shorewall
+      regexp: "^startup"
+      line: "startup=1"
+
+- name: Install Shorewall Init Scripts
+  apt:
+      name: shorewall-init
+      state: present
+
+- name: Enable Shorewall
+  service:
+      name: shorewall
+      state: started
+      enabled: yes

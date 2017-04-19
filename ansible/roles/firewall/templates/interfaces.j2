@@ -1,0 +1,4 @@
+net     {{ firewall_wan_if }}            detect          {{ _firewall_wan_if_options }}tcpflags,nosmurfs,routefilter,logmartians
+{% if firewall_lan_if %}
+loc     {{ firewall_lan_if }}            detect          {{ _firewall_lan_if_options }}tcpflags,nosmurfs,routefilter,logmartians
+{% endif %}

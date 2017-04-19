@@ -1,0 +1,3 @@
+---
+_firewall_wan_if_options: "{{ 'dhcp,' if firewall_wan_if in firewall_dhcp_ifs else '' }}"
+_firewall_lan_if_options: "{{ 'dhcp,' if firewall_lan_if in firewall_dhcp_ifs else '' }}"

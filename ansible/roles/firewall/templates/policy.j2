@@ -1,0 +1,7 @@
+$FW         net         ACCEPT
+{% if firewall_lan_if %}
+loc         net         ACCEPT
+$FW         loc         ACCEPT
+{% endif %}
+net         all         DROP
+all         all         REJECT
