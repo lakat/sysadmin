@@ -1,0 +1,3 @@
+{% if firewall_lan_if %}
+{{ firewall_wan_if }}                    {{ firewall_lan_ip | mandatory }}/{{ firewall_lan_width | mandatory }}
+{% endif %}

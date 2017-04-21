@@ -1,0 +1,9 @@
+{% for protocol in firewall_enabled_protocols %}
+{{ protocol }}(ACCEPT)   net         $FW
+{% if firewall_lan_if %}
+{{ protocol }}(ACCEPT)   loc         $FW
+{% endif %}
+{% endfor %}
+{% for portforward in firewall_self_forwards %}
+DNAT          net         $FW::{{ portforward.src }}    {{ portforward.proto }}     {{ portforward.dst }}
+{% endfor %}
