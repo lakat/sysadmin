@@ -31,3 +31,4 @@ short description for each:
   * `firewall_lan_width`: bitmask specifier for the LAN IP
  - ips: Set up Intrusion Prevention System, in this case fail2ban. This role
    has no parameters.
+ - locale: Set the system's locale to GB
