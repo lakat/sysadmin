@@ -1,0 +1,19 @@
+---
+- name: Install fail2ban
+  apt:
+      name: fail2ban
+      state: present
+
+- name: Copy fail2ban configuration file
+  copy:
+      src: jail.conf
+      dest: /etc/fail2ban/jail.conf
+  notify:
+      - restart fail2ban
+
+- name: Copy fail2ban shorewall config
+  copy:
+      src: shorewall.conf
+      dest: /etc/fail2ban/action.d/shorewall.conf
+  notify:
+      - restart fail2ban

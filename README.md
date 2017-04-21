@@ -29,3 +29,5 @@ short description for each:
      - `proto`: `tcp` or `udp`
   * `firewall_lan_ip`: the IP address of the LAN interface
   * `firewall_lan_width`: bitmask specifier for the LAN IP
+ - ips: Set up Intrusion Prevention System, in this case fail2ban. This role
+   has no parameters.
