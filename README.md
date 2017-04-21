@@ -27,8 +27,8 @@ short description for each:
      - `src`: the source port
      - `dst`: the destination port
      - `proto`: `tcp` or `udp`
-  * `firewall_lan_ip`: the IP address of the LAN interface
-  * `firewall_lan_width`: bitmask specifier for the LAN IP
+   * `firewall_lan_ip`: the IP address of the LAN interface
+   * `firewall_lan_width`: bitmask specifier for the LAN IP
  - ips: Set up Intrusion Prevention System, in this case fail2ban. This role
    has no parameters.
  - locale: Set the system's locale to GB
