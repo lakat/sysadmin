@@ -1,0 +1,7 @@
+---
+- name: Install language package
+  apt:
+      name: language-pack-en-base
+
+- name: Set locale
+  command: update-locale LC_ALL=en_GB.UTF-8 LANG=en_GB.UTF-8
