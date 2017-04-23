@@ -1,0 +1,30 @@
+---
+- name: Install private key
+  copy:
+      content: "{{ item.value.private_key.content }}"
+      dest: "{{ item.value.private_key.path }}"
+      owner: root
+      group: root
+      mode: 0600
+  no_log: yes
+  with_dict:
+      "{{ certificates.certs }}"
+
+- name: Install certificate
+  copy:
+      content: "{{ item.value.certificate.content }}"
+      dest: "{{ item.value.certificate.path }}"
+      owner: root
+      group: root
+      mode: 0644
+  no_log: yes
+  with_dict:
+      "{{ certificates.certs }}"
+
+- name: Install DH parameters
+  copy:
+      content: "{{ certificates.dhparam.content }}"
+      dest: "{{ certificates.dhparam.path }}"
+      owner: root
+      group: root
+      mode: 0644
