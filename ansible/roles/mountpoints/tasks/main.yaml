@@ -1,0 +1,28 @@
+---
+- name: Create mount points
+  file:
+      path: "{{ item.path }}"
+      state: directory
+      owner: root
+      group: root
+  with_items:
+      "{{ mountpoints }}"
+  when:
+      "{{ mountpoints }}"
+
+- name: Check for the existence of block devices
+  command: /usr/bin/test -b "{{ item.src }}"
+  register: _mountpoint_block_result
+  ignore_errors: yes
+  with_items: "{{ mountpoints }}"
+  changed_when: False
+
+- name: Add mount entries where block device exists
+  mount:
+      name: "{{ item.1.path }}"
+      src: "{{ item.1.src }}"
+      fstype: "{{ item.1.fstype }}"
+      state: mounted
+      opts: "{{ item.1.opts }}"
+  when: _mountpoint_block_result.results[item.0].rc == 0
+  with_indexed_items: "{{ mountpoints }}"
