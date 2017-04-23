@@ -82,3 +82,9 @@ short description for each:
        mechanism to ignore missing block devices was added due to testing, so
        another possible fix would be to make the testing infrastructure more
        production-like by attaching a block device to it.
+ - users: Create administrators in the system and install ssh keys for them.
+   * `users_administrators`: An array of dictionaries
+     - `password`: The password for the user
+     - `login`: The username to be used
+   * TODO:
+     - Rename this role to administrators

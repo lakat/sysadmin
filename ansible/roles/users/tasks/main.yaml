@@ -1,0 +1,28 @@
+---
+- name: Create administrators
+  user:
+      name: "{{ item.login }}"
+      state: present
+      password: "{{ item.password }}"
+      shell: /bin/bash
+      groups:
+          sudo
+  with_items: "{{ users_administrators }}"
+
+- name: ensure .ssh exists
+  file:
+      owner: "{{ item.login }}"
+      group: "{{ item.login }}"
+      path: "/home/{{ item.login }}/.ssh"
+      state: directory
+      mode: 0700
+  with_items: "{{ users_administrators }}"
+
+- name: set authorized_keys file
+  copy:
+      owner: "{{ item.login }}"
+      group: "{{ item.login }}"
+      dest: "/home/{{ item.login }}/.ssh/authorized_keys"
+      mode: 0644
+      content: "{{ item.key }}"
+  with_items: "{{ users_administrators }}"
