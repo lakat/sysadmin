@@ -32,3 +32,11 @@ short description for each:
  - ips: Set up Intrusion Prevention System, in this case fail2ban. This role
    has no parameters.
  - locale: Set the system's locale to GB
+ - hostname: Set the system's hostname and domain name. Please note that a
+   system reboot is required for the changes to take effect. The following
+   variables can be used:
+   * `hostname_hostname`: the host part of the FQDN
+   * `hostname_domainname`: the domain part of the FQDN
+   * TODO:
+     - check if the `hostname` command could be used to avoid the need for
+       rebooting the system.

@@ -1,0 +1,9 @@
+- name: Set hostname file
+  copy:
+      content: "{{ hostname_hostname }}"
+      dest: /etc/hostname
+
+- name: Set hosts file
+  template:
+      src: hosts.j2
+      dest: /etc/hosts
