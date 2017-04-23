@@ -64,3 +64,21 @@ short description for each:
      - `dhparam`:
        * `path`: Path for the DHParams file
        * `content`: Contents of the DHparams file
+ - mountpoints: Establish mount points for block devices if they exist. The
+   usecase is that the system has a block device with persistent data on it,
+   and this role will mount that block device to a specific directory. If the
+   block device does not exist, the mount point will be created and the error
+   will be ignored.
+   * `mountpoints`: An array of dictionaries
+     - `name`: Name for the mount point
+     - `src`: Block device to be used
+     - `path`: Target path into which to me mounted to
+     - `fstype`: File system type
+     - `opts`: Mount options
+  * TODO:
+     - Ignoring the non-existence of a block device smells. It would be better
+       to have an option within the mountpoint record to indicate that the
+       non-existence of the block device on the system can be ignored. The
+       mechanism to ignore missing block devices was added due to testing, so
+       another possible fix would be to make the testing infrastructure more
+       production-like by attaching a block device to it.
