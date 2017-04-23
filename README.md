@@ -45,3 +45,22 @@ short description for each:
      Please note that this list is empty by default, which means that you
      will be locked out of the system with the default configuration. Make
      sure you enable desired logins.
+ - certificates: Install certificates on your system, and add a dhparam file.
+   For generating the dhparam file, use:
+   `openssl dhparam -out dhparam.pem 4096`, for finding out why is it needed
+   at all, read
+   [this article](https://raymii.org/s/tutorials/Strong_SSL_Security_On_nginx.html).
+   Long story short: "The second threat is that many servers and use the same
+   prime numbers for Diffie-Hellman key exchange instead of generating their
+   own unique DH parameters"
+   * `certificates`:
+     - `certs`:
+       * `private_key`:
+         - `path`: The path for the private key on the system.
+         - `content`: Contents of the private key.
+       * `certificate`:
+         - `path`: The path for the certificate on the system.
+         - `content`: Contents of the certificate.
+     - `dhparam`:
+       * `path`: Path for the DHParams file
+       * `content`: Contents of the DHparams file
