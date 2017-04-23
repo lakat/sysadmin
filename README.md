@@ -40,3 +40,8 @@ short description for each:
    * TODO:
      - check if the `hostname` command could be used to avoid the need for
        rebooting the system.
+ - ssh: Configure sshd on the system.
+   * `ssh_allowed_users`: The list of logins that can log in through ssh.
+     Please note that this list is empty by default, which means that you
+     will be locked out of the system with the default configuration. Make
+     sure you enable desired logins.
