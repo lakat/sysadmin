@@ -105,12 +105,16 @@ short description for each:
        * `ssl`: A dictionary for ssl config
          - `cert`: Path to a certificate file
          - `privkey`: Path to the private key
-  * TODO:
-    - default index.html.j2 does not render any parameters, this might be
-      reduced to a single copy.
-    - ssl might be not only a path, but a content, so it does not need to
-      depend on anyone copying/setting contents of that file.
-    - Is there a way to avoid using a handler?
-    - the http section for each site seems to be wrong as there is no root
-      specified, so if someone wanted to werve something over http it is not
-      clear how that would work.
+   * TODO:
+     - default index.html.j2 does not render any parameters, this might be
+       reduced to a single copy.
+     - ssl might be not only a path, but a content, so it does not need to
+       depend on anyone copying/setting contents of that file.
+     - Is there a way to avoid using a handler?
+     - the http section for each site seems to be wrong as there is no root
+       specified, so if someone wanted to werve something over http it is not
+       clear how that would work.
+ - reboot: include this role to reboot your server
+   * TODO:
+     - we might want to flush handlers as a first task as after the reboot
+       it might not be possible to reach the server.
