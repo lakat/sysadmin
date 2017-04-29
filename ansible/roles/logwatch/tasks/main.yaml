@@ -1,0 +1,32 @@
+---
+- name: Logwatch Package
+  apt:
+      name: logwatch
+      state: present
+
+- name: Logwatch work directory
+  file:
+      path: /var/cache/logwatch
+      owner: root
+      group: root
+      state: directory
+      mode: 0644
+
+- name: Logwatch configuration
+  copy:
+      src: logwatch.conf
+      dest: /etc/logwatch/conf/logwatch.conf
+      owner: root
+      group: root
+      mode: 0644
+
+- name: Logwatch http
+  copy:
+      src: "{{ item }}"
+      dest: "/etc/logwatch/conf/logfiles/{{ item }}"
+      owner: root
+      group: root
+      mode: 0644
+  with_items:
+      - http.conf
+      - http-error.conf

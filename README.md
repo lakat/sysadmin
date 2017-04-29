@@ -88,3 +88,4 @@ short description for each:
      - `login`: The username to be used
    * TODO:
      - Rename this role to administrators
+ - logwatch: Add logwatch - no parameters
