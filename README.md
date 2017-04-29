@@ -89,3 +89,28 @@ short description for each:
    * TODO:
      - Rename this role to administrators
  - logwatch: Add logwatch - no parameters
+ - www: http server (nginx) with pluggable python applications - see pyapps
+   * `www_default_root`: Default filesystem path for the default server.
+   * `www_dhparam_path`: Path for dhparam file. This is needed to make sure
+     SSL is set up in a secure way.
+   * `www`:
+     - `sites`: An array of dictionaries for each site as follows:
+       * `name`: Name for the site
+       * `root`: root path for the site
+       * `domain`: domain name to serve
+       * `redirect_http_to_https`: if this is true, a 301 (Moved Permanently)
+         will be sent upon http request to redirect clients to https
+       * `http`: True if we want http traffic to be served
+       * `https`: True if we want to serve https traffic
+       * `ssl`: A dictionary for ssl config
+         - `cert`: Path to a certificate file
+         - `privkey`: Path to the private key
+  * TODO:
+    - default index.html.j2 does not render any parameters, this might be
+      reduced to a single copy.
+    - ssl might be not only a path, but a content, so it does not need to
+      depend on anyone copying/setting contents of that file.
+    - Is there a way to avoid using a handler?
+    - the http section for each site seems to be wrong as there is no root
+      specified, so if someone wanted to werve something over http it is not
+      clear how that would work.
