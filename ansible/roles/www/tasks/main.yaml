@@ -1,0 +1,83 @@
+---
+- name: Install nginx
+  apt:
+      name: nginx
+      state: present
+
+- name: Make default root
+  file:
+      path: "{{ www_default_root }}"
+      state: directory
+      owner: root
+      group: root
+      mode: 0755
+
+- name: Default page
+  template:
+      src: index.html.j2
+      dest: "{{ www_default_root }}/index.html"
+      owner: root
+      group: root
+      mode: 0644
+
+- name: Configure nginx
+  template:
+      src: nginx.conf.j2
+      dest: /etc/nginx/nginx.conf
+  notify: reload nginx
+
+- name: Default site
+  template:
+      src: default.j2
+      dest: /etc/nginx/sites-available/default
+      owner: root
+      group: root
+      mode: 0644
+  notify: reload nginx
+
+- name: Activate default site
+  file:
+      path: /etc/nginx/sites-enabled/default
+      src: /etc/nginx/sites-available/default
+      state: link
+
+- name: Make root for each site
+  file:
+      path: "{{ item.root }}"
+      state: directory
+      owner: root
+      group: root
+      mode: 0755
+  with_items: "{{ www.sites }}"
+
+- name: Make pyapps configuration directoru
+  file:
+      path: "/etc/pyapps/{{ item.name }}"
+      state: directory
+      owner: root
+      group: root
+      mode: 0755
+  with_items: "{{ www.sites }}"
+
+- name: Configure site
+  template:
+      src: site.j2
+      dest: "/etc/nginx/sites-available/{{ item.name }}"
+      owner: root
+      group: root
+      mode: 0644
+  notify: reload nginx
+  with_items: "{{ www.sites }}"
+
+- name: Activate site
+  file:
+      path: "/etc/nginx/sites-enabled/{{ item.name }}"
+      src: "/etc/nginx/sites-available/{{ item.name }}"
+      state: link
+  with_items: "{{ www.sites }}"
+
+- name: Enable nginx
+  service:
+      name: nginx
+      state: started
+      enabled: yes

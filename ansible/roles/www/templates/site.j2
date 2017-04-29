@@ -1,0 +1,29 @@
+{% if item.http %}
+server {
+    listen 80;
+    server_name {{ item.domain }};
+
+    {% if item.redirect_http_to_https %}
+    return 301 https://$host$request_uri;
+    {% endif %}
+}
+{% endif %}
+
+{% if item.https %}
+server {
+    listen 443 ssl;
+    root {{ item.root }};
+    index index.html index.htm index.nginx-debian.html;
+    server_name {{ item.domain }};
+    ssl_certificate {{ item.ssl.cert }};
+    ssl_certificate_key {{ item.ssl.privkey }};
+
+    location / {
+        # First attempt to serve request as file, then
+        # as directory, then fall back to displaying a 404.
+        try_files $uri $uri/ =404;
+    }
+
+    include /etc/pyapps/{{ item.name }}/*.conf;
+}
+{% endif %}
