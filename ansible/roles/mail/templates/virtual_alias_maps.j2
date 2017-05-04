@@ -1,0 +1,8 @@
+{% for mailbox in mail.mailboxes %}
+{% for alias in mailbox.aliases | default([]) %}
+{{ alias }} {{ mailbox.address }}
+{% endfor %}
+{% endfor %}
+{% for distribution_list in mail.distribution_lists|default([]) %}
+{{ distribution_list.src }} {{ distribution_list.recipients|join(', ') }}
+{% endfor %}

@@ -1,0 +1,172 @@
+---
+- name: Create mailstore group
+  group:
+      name: mailstore
+      gid: "{{ mail_gid }}"
+
+- name: Create mailstore user
+  user:
+      name: mailstore
+      state: present
+      shell: /bin/false
+      uid: "{{ mail_uid }}"
+      group: mailstore
+
+- name: Get all users details
+  getent:
+      database: passwd
+
+- name: Register mailsore uid/gid
+  set_fact:
+      mail_mailstore_uid: "{{ getent_passwd.mailstore.1 }}"
+      mail_mailstore_gid: "{{ getent_passwd.mailstore.2 }}"
+      mail_all_system_users: "{{ getent_passwd }}"
+
+- name: vmail homes
+  file:
+      path: "{{ mail_vhomes_root }}/{{ item.user }}"
+      owner: mailstore
+      group: mailstore
+      state: directory
+  with_items:
+      "{{ mail.mailboxes }}"
+
+- name: vmail boxes
+  file:
+      path: "{{ mail_vboxes_root }}/{{ item.user }}"
+      owner: mailstore
+      group: mailstore
+      state: directory
+  with_items:
+      "{{ mail.mailboxes }}"
+
+- name: Install Dovecot
+  apt:
+      name: dovecot-imapd
+      state: present
+
+- name: Dovecot Main Configuration
+  template:
+      src: "{{ item }}.j2"
+      dest: "/etc/dovecot/{{ item }}"
+      owner: root
+      mode: 0644
+  with_items:
+    - dovecot.conf
+  notify:
+    - reload dovecot
+
+- name: Dovecot SSL Configuration
+  template:
+      src: "ssl.conf.j2"
+      dest: "/etc/dovecot/conf.d/10-ssl.conf"
+      owner: root
+      mode: 0644
+  notify:
+    - reload dovecot
+
+- name: Dovecot Master Configuration
+  template:
+      src: "master.conf.j2"
+      dest: "/etc/dovecot/conf.d/10-master.conf"
+      owner: root
+      mode: 0644
+  notify:
+    - reload dovecot
+
+- name: Dovecot Auth Configuration
+  template:
+      src: "auth.conf.j2"
+      dest: "/etc/dovecot/conf.d/10-auth.conf"
+      owner: root
+      mode: 0644
+  notify:
+    - reload dovecot
+
+- name: Dovecot Password Database
+  template:
+      src: passdb.j2
+      dest: "{{ mail_mailusers_passdb }}"
+      owner: root
+      group: dovecot
+      mode: 0640
+  notify:
+    - reload dovecot
+
+- name: Dovecot User Database
+  template:
+      src: userdb.j2
+      dest: "{{ mail_mailusers_userdb }}"
+      owner: root
+      group: dovecot
+      mode: 0640
+  notify:
+    - reload dovecot
+
+- name: Dovecot Authentication
+  template:
+      src: "auth-system.conf.ext.j2"
+      dest: "/etc/dovecot/conf.d/auth-system.conf.ext"
+      owner: root
+      mode: 0644
+  notify:
+    - reload dovecot
+
+- name: Install Postfix
+  apt:
+      name: postfix
+      state: present
+
+- name: Enable Postfix
+  service:
+      name: postfix
+      state: started
+      enabled: yes
+
+- name: Configure email to mailbox mapping
+  template:
+      src: virtual_mailbox_maps.j2
+      dest: "{{ mail_virtual_mailbox_maps }}"
+      owner: root
+      mode: 0644
+  notify: remap virtual_mailbox_maps
+
+- name: Configure virtual alias map
+  template:
+      src: virtual_alias_maps.j2
+      dest: "{{ mail_virtual_alias_maps }}"
+      owner: root
+      mode: 0644
+  notify: remap virtual_alias_maps
+
+- name: Configure postfix
+  template:
+      src: "{{ item }}.j2"
+      dest: "/etc/postfix/{{ item }}"
+      owner: root
+      mode: 0644
+  with_items:
+    - main.cf
+    - master.cf
+  notify:
+    - reload postfix
+
+- name: Configure mail
+  template:
+      src: "{{ item }}.j2"
+      dest: "/etc/{{ item }}"
+      owner: root
+      mode: 0644
+  with_items:
+    - mailname
+  notify:
+    - reload postfix
+
+- name: Configure aliases
+  template:
+      src: aliases.j2
+      dest: "{{ mail_aliases_path }}"
+      owner: root
+      mode: 0644
+  notify:
+    - newaliases

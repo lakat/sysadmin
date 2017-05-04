@@ -123,6 +123,30 @@ short description for each:
    * `time_timezone`: The timezone to use
  - database: Install postgresql and libraries required for managing it later.
    This role has no parameters.
+ - mail: Instal both smtp and imap server
+   * `mail_certificate_path`: Path to certificate (used by IMAPS and SMTP)
+   * `mail_private_key_path`: Path to private key for the above
+   * `mail_virtual_mailbox_maps`: location for virtual mailbox mapping file
+   * `mail_virtual_alias_maps`: location for virtual alias maps
+   * `mail_aliases_path`: aliases file
+   * `mail_vboxes_root`: root for virtual mailboxes
+   * `mail_vhomes_root`: root for virtual homes
+   * `mail_mailusers_passdb`: location where to put password database
+   * `mail_mailusers_userdb`: location for user database
+   * `mail_gid`: GID for mail user
+   * `mail_uid`: UID for mail user
+   * `mail_aliases`: A list of dictionaries for explicit aliases
+     - `src`: Source
+     - `dst`: Destination
+   * `mail`: Dictionary for mail settings:
+     - `mailname`: name for your mailing system
+     - `admin`: the user who receives e-mail for system accounts
+     - `domains`: list of domains to serve
+     - `mailboxes`: A list of dictionaries:
+       * `user`: username for that mailbox
+       * `address`: e-mail address for that mailbox
+       * `password`: Password for that user (use `doveadm pw -s SHA512-CRYPT`)
+       * `aliases`: A list to define aliases for this mailbox
 
 
 ### <a name="howtopass"></a>How to generate a password
