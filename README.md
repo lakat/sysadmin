@@ -149,6 +149,9 @@ short description for each:
        * `aliases`: A list to define aliases for this mailbox
  - mailutils: Install mailutils, so people can send emails from console. This
    role has no parameters.
+ - uwsgi: Install uwsgi to prepare for pyapps
+   * `uwsgi_install_dir`: Installation directory for uwsgi
+   * `uwsgi_root`: Root for applications
 
 
 ### <a name="howtopass"></a>How to generate a password
