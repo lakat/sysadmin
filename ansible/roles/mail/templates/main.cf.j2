@@ -1,0 +1,98 @@
+# See /usr/share/postfix/main.cf.dist for a commented, more complete version
+
+
+# Debian specific:  Specifying a file name will cause the first
+# line of that file to be used as the name.  The Debian default
+# is /etc/mailname.
+#myorigin = /etc/mailname
+
+smtpd_banner = $myhostname ESMTP
+biff = no
+
+# appending .domain should be the MUA's job.
+append_dot_mydomain = no
+
+# Uncomment the next line to generate "delayed mail" warnings
+#delay_warning_time = 4h
+
+readme_directory = no
+
+# TLS parameters
+smtpd_tls_cert_file={{ mail_certificate_path }}
+smtpd_tls_key_file={{ mail_private_key_path }}
+smtpd_use_tls=yes
+smtpd_tls_session_cache_database = btree:${data_directory}/smtpd_scache
+smtp_tls_session_cache_database = btree:${data_directory}/smtp_scache
+
+# SASL
+smtpd_sasl_type = dovecot
+smtpd_sasl_path = private/auth
+smtpd_sasl_auth_enable = yes
+
+# See /usr/share/doc/postfix/TLS_README.gz in the postfix-doc package for
+# information on enabling SSL in the smtp client.
+
+myhostname = {{ mail.mailname }}
+alias_maps = hash:{{ mail_aliases_path }}
+alias_database = hash:{{ mail_aliases_path }}
+myorigin = /etc/mailname
+
+# Locally delivered domains
+mydestination = {{ mail.mailname }}
+
+relayhost =
+mynetworks = 127.0.0.0/8
+mailbox_size_limit = 0
+recipient_delimiter = +
+inet_interfaces = all
+inet_protocols = ipv4
+
+# Virtual mailbox configuration
+virtual_mailbox_domains = {{ mail.domains | join(" ") }}
+virtual_mailbox_base = {{ mail_vboxes_root }}
+virtual_mailbox_maps = hash:{{ mail_virtual_mailbox_maps }}
+virtual_minimum_uid = {{ mail_mailstore_uid }}
+virtual_uid_maps = static:{{ mail_mailstore_uid }}
+virtual_gid_maps = static:{{ mail_mailstore_gid }}
+virtual_alias_maps = hash:{{ mail_virtual_alias_maps }}
+
+#
+# Reject all client commands
+#
+smtpd_client_restrictions =
+    sleep 5,
+    permit_sasl_authenticated
+    permit_mynetworks
+# reject if IP->name fails or name->IP fails or name->IP != IP
+    reject_unknown_client_hostname,
+# Blacklisting
+    reject_rbl_client zen.spamhaus.org,
+    reject_rbl_client bl.spamcop.net
+
+#
+# Reject MAIL FROM information
+#
+smtpd_sender_restrictions =
+    permit_mynetworks,
+# Reject those senders whose domain has no MX or A
+    reject_unknown_sender_domain,
+    reject_non_fqdn_sender,
+# This might be too strong
+    warn_if_reject reject_unverified_sender,
+
+#
+# Reject RCPT TO information
+#
+smtpd_recipient_restrictions =
+# permit the request if the client is from $mynetworks
+    permit_mynetworks
+    permit_sasl_authenticated
+    reject_unauth_destination
+    reject_non_fqdn_recipient
+
+# Do not store address verify map:
+address_verify_map =
+message_size_limit = 104857600
+virtual_mailbox_limit = 209715200
+
+compatibility_level = 2

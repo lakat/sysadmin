@@ -1,0 +1,41 @@
+---
+# uid/gid for the user to access mailbox. These are fixed numbers out of the
+# dynamically assigned range, so the files on permanent store does not need to
+# be changed on OS reinstall.
+mail_uid: 40000
+mail_gid: 40000
+# These are the system-wide extra aliases, so they refer to emails sent
+# to mail.mailname domain (local delivery)
+mail_aliases: []
+#mail_aliases:
+#    - src: joe
+#      dst: joe@gmail.com
+
+# Paths where configuration stored
+mail_virtual_mailbox_maps: /etc/postfix/vmailbox
+mail_virtual_alias_maps: /etc/postfix/virtual
+mail_aliases_path: /etc/aliases
+mail_vboxes_root: /var/vmail/boxes
+mail_vhomes_root: /var/vmail/homes
+mail_mailusers_passdb: /etc/mailusers.passdb
+mail_mailusers_userdb: /etc/mailusers.userdb
+
+# This is the main structure which you want to specify to fit for your
+# environment. To generate the password, you want to use
+# doveadm pw -s SHA512-CRYPT
+mail:
+    mailname: mailhost.example.com
+    admin: admin@example.com
+    domains:
+        - example.com
+    mailboxes:
+        - user: admin
+          address: admin@example.com
+          password: "{CRYPT}0GdZevSQvurNA"
+          aliases:
+              - admin1@example.com
+    distribution_lists:
+        - src: list@example.com
+          recipients:
+              - user1@example.com
+              - user2@example.com

@@ -1,0 +1,8 @@
+# Alias all users of the system to admin
+{% for system_user in mail_all_system_users %}
+{{ system_user }}: {{ mail.admin }}
+{% endfor %}
+# Explicit aliases
+{% for alias in mail_aliases %}
+{{ alias.src }}: {{ alias.dest }}
+{% endfor %}

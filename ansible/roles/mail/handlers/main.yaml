@@ -1,0 +1,20 @@
+---
+- name: remap virtual_mailbox_maps
+  command: "postmap {{ mail_virtual_mailbox_maps }}"
+
+- name: remap virtual_alias_maps
+  command: "postmap {{ mail_virtual_alias_maps }}"
+
+- name: newaliases
+  command: newaliases
+
+- name: reload postfix
+  command: postfix reload
+
+- name: reload dovecot
+  command: doveadm reload
+
+- name: restart dovecot
+  service:
+      name: dovecot
+      state: restarted
