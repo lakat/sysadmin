@@ -1,0 +1,58 @@
+---
+# Needed for separate app virtualenvs
+- name: Install uwsgi requirements
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+      - python-virtualenv
+      - python-dev
+      - build-essential
+      - rsync  # Needed for deployment
+
+- name: Install uwsgi
+  pip:
+      name: uwsgi
+      virtualenv: "{{ uwsgi_install_dir }}"
+      virtualenv_python: python2.7
+
+- name: Make directories
+  file:
+      path: "{{ uwsgi_root }}/{{ item }}"
+      state: directory
+      owner: root
+      group: root
+      mode: 0755
+  with_items:
+      - confs
+      - apps
+      - homes
+      - sockets
+
+- name: Emperor configuration file
+  template:
+      src: emperor.ini.j2
+      dest: /etc/uwsgi-emperor.ini
+      owner: root
+      mode: 0644
+
+- name: Make systemd unit file
+  template:
+      src: uwsgi.emperor.service.j2
+      dest: /etc/systemd/system/uwsgi.emperor.service
+      owner: root
+      mode: 0644
+  register: uwsgi_unit
+
+- name: Reload systemd
+  systemd:
+      name: cron
+      daemon_reload: yes
+  when: uwsgi_unit.changed
+
+- name: Enable service
+  systemd:
+      name: uwsgi.emperor.service
+      enabled: yes
+      daemon_reload: yes
+      state: started
