@@ -1,0 +1,5 @@
+---
+- name: Install Mail Utils
+  apt:
+      name: mailutils
+      state: present

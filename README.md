@@ -147,6 +147,8 @@ short description for each:
        * `address`: e-mail address for that mailbox
        * `password`: Password for that user (use `doveadm pw -s SHA512-CRYPT`)
        * `aliases`: A list to define aliases for this mailbox
+ - mailutils: Install mailutils, so people can send emails from console. This
+   role has no parameters.
 
 
 ### <a name="howtopass"></a>How to generate a password
