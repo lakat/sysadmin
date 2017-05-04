@@ -84,7 +84,8 @@ short description for each:
        production-like by attaching a block device to it.
  - users: Create administrators in the system and install ssh keys for them.
    * `users_administrators`: An array of dictionaries
-     - `password`: The password for the user
+     - `password`: The password for the user. See
+        [the section below](#howtopass) on how to generate the password.
      - `login`: The username to be used
    * TODO:
      - Rename this role to administrators
@@ -120,3 +121,11 @@ short description for each:
        it might not be possible to reach the server.
  - time: set timezone of the server
    * `time_timezone`: The timezone to use
+
+
+### <a name="howtopass"></a>How to generate a password
+
+Have python passlib installed, and then:
+
+
+    python -c "from passlib.hash import sha512_crypt; import getpass; print sha512_crypt.using(rounds=5000).hash(getpass.getpass())"
