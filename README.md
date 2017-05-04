@@ -118,3 +118,5 @@ short description for each:
    * TODO:
      - we might want to flush handlers as a first task as after the reboot
        it might not be possible to reach the server.
+ - time: set timezone of the server
+   * `time_timezone`: The timezone to use
