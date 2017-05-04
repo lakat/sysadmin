@@ -121,6 +121,8 @@ short description for each:
        it might not be possible to reach the server.
  - time: set timezone of the server
    * `time_timezone`: The timezone to use
+ - database: Install postgresql and libraries required for managing it later.
+   This role has no parameters.
 
 
 ### <a name="howtopass"></a>How to generate a password
