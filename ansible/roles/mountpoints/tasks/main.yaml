@@ -8,7 +8,7 @@
   with_items:
       "{{ mountpoints }}"
   when:
-      "{{ mountpoints }}"
+      mountpoints
 
 - name: Check for the existence of block devices
   command: /usr/bin/test -b "{{ item.src }}"

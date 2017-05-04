@@ -9,7 +9,7 @@
   local_action:
       wait_for
       host={{ ansible_host }}
-      port={{ ansible_port }}
+      port={{ ansible_port | default(22) }}
       timeout=300
       delay=5
   become: false
