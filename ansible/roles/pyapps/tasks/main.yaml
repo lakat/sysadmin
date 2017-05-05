@@ -1,0 +1,72 @@
+---
+- name: Create per application groups
+  group:
+      name: "uwsgi_{{ item.name }}"
+  with_items: "{{ pyapps }}"
+  tags:
+      - uwsgi_app_deployment
+
+- name: Create per application users
+  user:
+      name: "uwsgi_{{ item.name }}"
+      state: present
+      shell: /bin/false
+      group: "uwsgi_{{ item.name }}"
+      home: "{{ uwsgi_root }}/homes/{{ item.name }}"
+  with_items: "{{ pyapps }}"
+  tags:
+      - uwsgi_app_deployment
+
+- name: Make app roots
+  file:
+      path: "{{ uwsgi_root }}/apps/{{ item.name }}"
+      state: directory
+      owner: root
+      group: "uwsgi_{{ item.name }}"
+      mode: 0755
+  with_items: "{{ pyapps }}"
+  tags:
+      - uwsgi_app_deployment
+
+- name: Make socket roots
+  file:
+      path: "{{ uwsgi_root }}/sockets/{{ item.name }}"
+      state: directory
+      owner: "uwsgi_{{ item.name }}"
+      group: "www-data"
+      mode: 0750
+  with_items: "{{ pyapps }}"
+  tags:
+      - uwsgi_app_deployment
+
+- name: Create database role
+  become_user: postgres
+  postgresql_user:
+      name: "uwsgi_{{ item.name }}"
+  with_items: "{{ pyapps }}"
+
+- name: Create database
+  become_user: postgres
+  postgresql_db:
+      encoding: utf8
+      name: "{{ item.name }}"
+      owner: "uwsgi_{{ item.name }}"
+  with_items: "{{ pyapps }}"
+
+- name: nginx config
+  template:
+      src: nginx.j2
+      dest: "/etc/pyapps/{{ item.site }}/{{ item.name }}.conf"
+      owner: root
+      group: root
+      mode: 0644
+  notify: reload nginx
+  with_items: "{{ pyapps }}"
+
+- name: Make configuration files
+  template:
+      src: uwsgi.j2
+      dest: "{{ uwsgi_root }}/confs/{{ item.name }}.ini"
+      owner: root
+      mode: 0644
+  with_items: "{{ pyapps }}"

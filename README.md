@@ -152,6 +152,14 @@ short description for each:
  - uwsgi: Install uwsgi to prepare for pyapps
    * `uwsgi_install_dir`: Installation directory for uwsgi
    * `uwsgi_root`: Root for applications
+ - pyapps: Python application deployer. This creates a separate user, group,
+   database, wsgi config and www mapping for your application.
+   * `uwsgi_root`: Root of uwsgi
+   * `pyapps`: A list of dictionaries
+     - `name`: Name for the application
+     - `site`: Name of the site under which you want to set it up
+     - `location`: A location where you want to map the application
+     - `processes`: Number of processes to run
 
 
 ### <a name="howtopass"></a>How to generate a password
