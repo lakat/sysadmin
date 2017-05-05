@@ -1,0 +1,6 @@
+location {{ item.location }} {
+    include uwsgi_params;
+    uwsgi_pass unix:{{ uwsgi_root }}/sockets/{{ item.name }}/data.socket;
+    uwsgi_param SCRIPT_NAME "";
+    uwsgi_param UWSGI_SCHEME https;
+}

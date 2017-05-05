@@ -1,0 +1,12 @@
+[uwsgi]
+uid = uwsgi_{{ item.name }}
+gid = uwsgi_{{ item.name }}
+touch-reload = {{ uwsgi_root }}/apps/{{ item.name }}/actual_revision
+actual_revision = @({{ uwsgi_root }}/apps/{{ item.name }}/actual_revision)
+socket = {{ uwsgi_root }}/sockets/{{ item.name }}/data.socket
+master = true
+virtualenv = {{ uwsgi_root }}/apps/{{ item.name }}/%(actual_revision)/venv
+processes = {{ item.processes }}
+chdir = {{ uwsgi_root }}/homes/{{ item.name }}
+paste = config:{{ uwsgi_root }}/apps/{{ item.name }}/%(actual_revision)/paste.ini
+chmod-socket = 666
