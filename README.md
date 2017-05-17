@@ -23,12 +23,17 @@ short description for each:
    * `firewall_enabled_protocols`: an array that lists protocols that are
    enabled from the outside world.
    * `firewall_self_forwards`: port forwardings for services running on the
-   firewall itself. An array of dictionaries:
+   firewall itself. The service that is listening on the src port will also
+   be accessible on the dst port. An array of dictionaries:
      - `src`: the source port
      - `dst`: the destination port
      - `proto`: `tcp` or `udp`
    * `firewall_lan_ip`: the IP address of the LAN interface
    * `firewall_lan_width`: bitmask specifier for the LAN IP
+   * `firewall_local_dnats`: for the local network, accessing src ip will be
+   served by dst ip on net.
+     - `src`: The source IP, or list of IPs
+     - `dst`: The destination IP
  - ips: Set up Intrusion Prevention System, in this case fail2ban. This role
    has no parameters.
  - locale: Set the system's locale to GB

@@ -7,3 +7,6 @@
 {% for portforward in firewall_self_forwards %}
 DNAT          net         $FW::{{ portforward.src }}    {{ portforward.proto }}     {{ portforward.dst }}
 {% endfor %}
+{% for local_dnat in firewall_local_dnats %}
+DNAT          loc         net:{{ local_dnat.dst }} - - - {{ local_dnat.src }}
+{% endfor %}
