@@ -4,3 +4,4 @@ firewall_lan_if:
 firewall_dhcp_ifs: []
 firewall_enabled_protocols: [SSH]
 firewall_self_forwards: []
+firewall_local_dnats: []
