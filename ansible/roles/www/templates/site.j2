@@ -2,10 +2,14 @@
 server {
     listen 80;
     server_name {{ item.domain }};
+{% if item.redirect_http_to_https | default(None) %}
 
-    {% if item.redirect_http_to_https %}
     return 301 https://$host$request_uri;
-    {% endif %}
+{% endif %}
+{% if item.redirect_to_another_domain | default(None) %}
+
+    rewrite ^ {{ item.redirect_to_another_domain }}$request_uri? permanent;
+{% endif %}
 }
 {% endif %}
 
@@ -17,6 +21,10 @@ server {
     server_name {{ item.domain }};
     ssl_certificate {{ item.ssl.cert }};
     ssl_certificate_key {{ item.ssl.privkey }};
+{% if item.redirect_to_another_domain | default('') %}
+
+    rewrite ^ {{ item.redirect_to_another_domain }}$request_uri? permanent;
+{% endif %}
 
     location / {
         # First attempt to serve request as file, then

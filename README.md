@@ -106,6 +106,9 @@ short description for each:
        * `domain`: domain name to serve
        * `redirect_http_to_https`: if this is true, a 301 (Moved Permanently)
          will be sent upon http request to redirect clients to https
+       * `redirect_to_another_domain`: Specify target domain here, something
+         like https://example.com, and all requests arriving to this site's
+         http and https endpoint will be redirected to the target site.
        * `http`: True if we want http traffic to be served
        * `https`: True if we want to serve https traffic
        * `ssl`: A dictionary for ssl config
