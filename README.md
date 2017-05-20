@@ -92,8 +92,11 @@ short description for each:
      - `password`: The password for the user. See
         [the section below](#howtopass) on how to generate the password.
      - `login`: The username to be used
-   * TODO:
-     - Rename this role to administrators
+     - `key`: ssh key to be added to ~/.ssh/authorized_keys
+   * `users_admin_robots`: An array of dictionaries, each represent a user that
+     can log in and run sudo without the need for a password.
+     - `login`: Username to be used
+     - `key`: ssh key to be added to ~/.ssh/authorized_keys
  - logwatch: Add logwatch - no parameters
  - www: http server (nginx) with pluggable python applications - see pyapps
    * `www_default_root`: Default filesystem path for the default server.

@@ -9,6 +9,20 @@
           sudo
   with_items: "{{ users_administrators }}"
 
+- name: Create admin robots
+  user:
+      name: "{{ item.login }}"
+      state: present
+      shell: /bin/bash
+  with_items: "{{ users_admin_robots }}"
+
+- name: Passwordless sudo for admin robots
+  template:
+      src: "sudoer.j2"
+      dest: "/etc/sudoers.d/admin_robots"
+      owner: root
+      mode: 0600
+
 - name: ensure .ssh exists
   file:
       owner: "{{ item.login }}"
@@ -16,7 +30,7 @@
       path: "/home/{{ item.login }}/.ssh"
       state: directory
       mode: 0700
-  with_items: "{{ users_administrators }}"
+  with_items: "{{ users_administrators + users_admin_robots }}"
 
 - name: set authorized_keys file
   copy:
@@ -25,4 +39,4 @@
       dest: "/home/{{ item.login }}/.ssh/authorized_keys"
       mode: 0644
       content: "{{ item.key }}"
-  with_items: "{{ users_administrators }}"
+  with_items: "{{ users_administrators + users_admin_robots }}"
