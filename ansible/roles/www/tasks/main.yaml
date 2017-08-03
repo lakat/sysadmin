@@ -59,6 +59,18 @@
       mode: 0755
   with_items: "{{ www.sites }}"
 
+- name: Make htpasswd files
+  copy:
+      content: "{{ item.1.htpasswd }}"
+      dest: "/etc/nginx/{{ item.1.name }}.htpasswd"
+      mode: 0644
+  when:
+      item.1.htpasswd is defined
+  with_subelements:
+      - "{{ www.sites }}"
+      - aliases
+      - skip_missing: yes
+
 - name: Configure site
   template:
       src: site.j2

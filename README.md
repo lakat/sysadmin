@@ -117,6 +117,19 @@ short description for each:
        * `ssl`: A dictionary for ssl config
          - `cert`: Path to a certificate file
          - `privkey`: Path to the private key
+       * `aliases`: Optional array of dictionaries for each alias you want to
+                    share
+         - `name`: A name to be used to identify the alias. This will be used
+                   as a filename, so please use compatible string
+         - `directory`: The local directory to be exported. Please note that
+                        you need to take care of creating this directory.
+         - `mount_point`: Where would you like to mount the directory
+         - `htpasswd`: Optional - contents of the htpasswd file. Use a
+                       `user:password-hash` format and generate the password
+                       hash with `openssl passwd -apr1`. If not specified
+                       this will be open to public.
+         - `allowed_hosts`: Optional list of hosts that you want to allow
+                            access. If not specified, it will be open to public.
    * TODO:
      - default index.html.j2 does not render any parameters, this might be
        reduced to a single copy.

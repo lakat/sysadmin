@@ -33,5 +33,24 @@ server {
     }
 
     include /etc/pyapps/{{ item.name }}/*.conf;
+
+{% if item.aliases is defined %}
+{% for alias in item.aliases %}
+	location {{ alias.mount_point }} {
+	    alias {{ alias.directory }};
+	    auth_basic "{{ alias.name }}";
+{% if alias.htpasswd is defined %}
+	    auth_basic_user_file /etc/nginx/{{ alias.name }}.htpasswd;
+{% endif %}
+{% if alias.allowed_hosts is defined %}
+{% for host in alias.allowed_hosts %}
+        allow {{ host }};
+{% endfor %}
+        deny all;
+{% endif %}
+	    autoindex on;
+	}
+{% endfor %}
+{% endif %}
 }
 {% endif %}
