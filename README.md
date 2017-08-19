@@ -114,6 +114,7 @@ short description for each:
          http and https endpoint will be redirected to the target site.
        * `http`: True if we want http traffic to be served
        * `https`: True if we want to serve https traffic
+       * `serve_on_http`: Serve aliases on http as well
        * `ssl`: A dictionary for ssl config
          - `cert`: Path to a certificate file
          - `privkey`: Path to the private key
@@ -192,3 +193,22 @@ Have python passlib installed, and then:
 
 
     python -c "from passlib.hash import sha512_crypt; import getpass; print sha512_crypt.using(rounds=5000).hash(getpass.getpass())"
+
+
+### How to generate an SSL certificate request
+
+First, generate a private key:
+
+    openssl genrsa -out <domain.key> 2048
+
+Then Create the CSR:
+
+    openssl req -utf8 -new -sha256 -key <domain.key> -out <domain.csr>
+
+On cert generation I used SHA256 - not the FULL CHAIN. Once that's done, needed
+to append a cert to the chain:
+ - Intermediate CA Certificate: RapidSSL RSA SHA-2 (under SHA-1 Root)
+
+Always do a check with:
+https://www.ssllabs.com/ssltest/analyze.html
+

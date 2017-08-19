@@ -5,10 +5,32 @@ server {
 {% if item.redirect_http_to_https | default(None) %}
 
     return 301 https://$host$request_uri;
-{% endif %}
-{% if item.redirect_to_another_domain | default(None) %}
+{% elif item.redirect_to_another_domain | default(None) %}
 
     rewrite ^ {{ item.redirect_to_another_domain }}$request_uri? permanent;
+{% elif item.serve_on_http | default(None) %}
+    root {{ item.root }};
+    index index.html index.htm index.nginx-debian.html;
+    server_name {{ item.domain }};
+
+{% if item.aliases is defined %}
+{% for alias in item.aliases %}
+	location {{ alias.mount_point }} {
+	    alias {{ alias.directory }};
+	    auth_basic "{{ alias.name }}";
+{% if alias.htpasswd is defined %}
+	    auth_basic_user_file /etc/nginx/{{ alias.name }}.htpasswd;
+{% endif %}
+{% if alias.allowed_hosts is defined %}
+{% for host in alias.allowed_hosts %}
+        allow {{ host }};
+{% endfor %}
+        deny all;
+{% endif %}
+	    autoindex on;
+	}
+{% endfor %}
+{% endif %}
 {% endif %}
 }
 {% endif %}
