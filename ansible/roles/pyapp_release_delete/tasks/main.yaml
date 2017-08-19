@@ -1,0 +1,15 @@
+- name: Get actual revision
+  command: "cat {{ uwsgi_root }}/apps/{{ application.name }}/actual_revision"
+  register: actual_revision
+  changed_when: False
+
+- name: Die if user wants to del actual revision
+  debug:
+      msg: checking if actual revision is to be removed
+  failed_when: actual_revision.stdout == application.revision
+  changed_when: False
+
+- name: Remove app root
+  file:
+    path: "{{ uwsgi_root }}/apps/{{ application.name }}/{{ application.revision }}"
+    state: absent

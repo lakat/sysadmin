@@ -118,6 +118,8 @@ short description for each:
        * `ssl`: A dictionary for ssl config
          - `cert`: Path to a certificate file
          - `privkey`: Path to the private key
+       * `serve_root`: If this is true, nginx will serve the `/` point, so you
+                       cannot export a pyapp/alias there.
        * `aliases`: Optional array of dictionaries for each alias you want to
                     share
          - `name`: A name to be used to identify the alias. This will be used

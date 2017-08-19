@@ -1,0 +1,90 @@
+---
+- name: Install postgresql development libraries
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+      - libpq-dev
+  become: yes
+- name: New root for application
+  file:
+    path: "{{ uwsgi_root }}/apps/{{ application.name }}/{{ application.revision }}"
+    state: directory
+    owner: "{{ ansible_user }}"
+    recurse: yes
+  register: appdeploy_root
+  become: yes
+
+- name: Make dependency dir
+  file:
+    path: "{{ appdeploy_root.path }}/deps"
+    state: directory
+  register: appdeploy_deps
+
+- name: Copy dependencies
+  copy:
+    src: "{{ application.eggs }}"
+    dest: "{{ appdeploy_deps.path }}"
+
+- name: Copy requirements
+  copy:
+    src: "{{ application.requirements }}"
+    dest: "{{ appdeploy_deps.path }}/requirements.txt"
+
+- name: Make virtualenv
+  pip:
+    virtualenv: "{{ appdeploy_root.path }}/venv"
+    virtualenv_python: python2.7
+    requirements: "{{ appdeploy_deps.path }}/requirements.txt"
+    extra_args: "--no-index --find-links=file://{{ appdeploy_deps.path }}"
+
+- name: Copy paste config
+  copy:
+    src: "{{ application.paste_config }}"
+    dest: "{{ appdeploy_root.path }}/paste.ini"
+
+- name: Copy cron script
+  template:
+      src: cron.j2
+      dest: "{{ uwsgi_root }}/apps/{{ application.name }}/{{ application.revision }}/cron"
+      mode: 0755
+  when: application.cron_script is defined
+
+- name: Copy extra files
+  copy:
+      src: "{{ item.src }}"
+      dest: "{{ uwsgi_root }}/apps/{{ application.name }}/{{ application.revision }}/{{ item.dest }}"
+      mode: 0644
+  with_items: "{{ application.extra_files | default([]) }}"
+
+- name: Set permissions
+  file:
+    path: "{{ appdeploy_root.path }}"
+    owner: root
+    group: "uwsgi_{{ application.name }}"
+    mode: o-w,g-w
+    recurse: yes
+  become: yes
+
+- name: Deploy
+  copy:
+    dest: "{{ uwsgi_root }}/apps/{{ application.name }}/actual_revision"
+    content: "{{ appdeploy_root.path | basename }}"
+  become: yes
+
+- name: Establish cronjob
+  cron:
+      name: "Application Specific CRON job"
+      user: "uwsgi_{{ application.name }}"
+      minute: "*/5"
+      value: "{{ uwsgi_root }}/apps/{{ application.name }}/{{ application.revision }}/cron"
+  when: application.cron_script is defined
+  become: yes
+
+- name: Disable cronjob
+  cron:
+      name: "Application Specific CRON job"
+      user: "uwsgi_{{ application.name }}"
+      state: absent
+  when: application.cron_script is not defined
+  become: yes
