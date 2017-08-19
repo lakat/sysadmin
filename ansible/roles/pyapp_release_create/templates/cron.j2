@@ -1,0 +1,24 @@
+#!/bin/bash
+STDOUT=$(mktemp)
+STDERR=$(mktemp)
+
+(
+cd "{{ uwsgi_root }}/apps/{{ application.name }}/{{ application.revision }}"
+. venv/bin/activate
+set -eux
+{{ application.cron_script }}
+) >"$STDOUT" 2>"$STDERR"
+
+RESULT="$?"
+
+if [ "$RESULT" != "0" ]; then
+    echo "JOB RETURNED $RESULT"
+    echo "========== STDOUT =========="
+    cat "$STDOUT"
+    echo "========== STDERR =========="
+    cat "$STDERR"
+fi
+
+rm -f "$STDOUT" "$STDERR"
+
+exit "$RESULT"
