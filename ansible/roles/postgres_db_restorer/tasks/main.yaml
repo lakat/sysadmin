@@ -1,0 +1,43 @@
+---
+- name: Create a temporary filename
+  tempfile:
+      state: file
+  become: yes
+  become_user: postgres
+  register: temporary_restore_file
+
+- name: Upload database dump
+  copy:
+      src: "{{ restore_local_file }}"
+      dest: "{{ temporary_restore_file.path }}"
+  become: yes
+
+- name: Kick database users
+  shell: |
+      psql <<EOF
+      select pg_terminate_backend(pid) from pg_stat_activity where datname='{{ restore_database }}';
+      EOF
+  become: yes
+  become_user: postgres
+
+- name: Recreate database
+  shell: |
+      psql <<EOF
+      DROP DATABASE {{ restore_database }};
+      CREATE DATABASE {{ restore_database }} ENCODING 'utf8';
+      GRANT ALL on DATABASE {{ restore_database }} to {{ restore_user }};
+      EOF
+  become: yes
+  become_user: postgres
+
+- name: Restore database dump
+  shell: |
+      pg_restore --schema=public --dbname={{ restore_database }} --no-owner --no-privileges --role={{ restore_user }} {{ temporary_restore_file.path }}
+  become: yes
+  become_user: postgres
+
+- name: Remove temporary file
+  file:
+      path: "{{ temporary_restore_file.path }}"
+      state: absent
+  become: yes

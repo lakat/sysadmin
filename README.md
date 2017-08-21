@@ -187,9 +187,13 @@ short description for each:
      - `site`: Name of the site under which you want to set it up
      - `location`: A location where you want to map the application
      - `processes`: Number of processes to run
- - postgres_pg_dumper: Dump a postgres database
+ - postgres_db_dumper: Dump a postgres database
    * `backup_database`: Name of the database to dump
    * `backup_local_file`: Name for the local file to store the dump
+ - postgres_db_restorer: Restore a database from a local dump
+   * `restore_local_file`: Local path pointing to a database dump
+   * `restore_database`: Database to restore to
+   * `restore_user`: User on remote system who will own the database
 
 
 ### <a name="howtopass"></a>How to generate a password
