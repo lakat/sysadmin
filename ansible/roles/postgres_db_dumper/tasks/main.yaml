@@ -1,0 +1,26 @@
+---
+- name: Create a temporary filename
+  tempfile:
+      state: file
+  become: yes
+  become_user: postgres
+  register: temporary_backup_file
+
+- name: Create database dump
+  shell: |
+      pg_dump --format=custom --file="{{ temporary_backup_file.path }}" {{ backup_database }}
+  become: yes
+  become_user: postgres
+
+- name: Download database dump
+  fetch:
+      src: "{{ temporary_backup_file.path }}"
+      dest: "{{ backup_local_file }}"
+      flat: yes
+  become: yes
+
+- name: Remove temporary file
+  file:
+      path: "{{ temporary_backup_file.path }}"
+      state: absent
+  become: yes

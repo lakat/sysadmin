@@ -187,6 +187,9 @@ short description for each:
      - `site`: Name of the site under which you want to set it up
      - `location`: A location where you want to map the application
      - `processes`: Number of processes to run
+ - postgres_pg_dumper: Dump a postgres database
+   * `backup_database`: Name of the database to dump
+   * `backup_local_file`: Name for the local file to store the dump
 
 
 ### <a name="howtopass"></a>How to generate a password
