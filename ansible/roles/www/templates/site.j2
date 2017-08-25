@@ -46,6 +46,10 @@ server {
 {% if item.redirect_to_another_domain | default('') %}
 
     rewrite ^ {{ item.redirect_to_another_domain }}$request_uri? permanent;
+{% elif item.rewrites is defined %}
+{% for rewrite in item.rewrites %}
+    rewrite {{ rewrite }};
+{% endfor %}
 {% endif %}
 
 {% if item.serve_root | default(True) %}
