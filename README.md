@@ -133,6 +133,11 @@ short description for each:
                        this will be open to public.
          - `allowed_hosts`: Optional list of hosts that you want to allow
                             access. If not specified, it will be open to public.
+      * `rewrites`: A list of custom strings. Refer to nginx's documentation on
+        the format, see rewrite section. For example having the following value:
+        `^/something$ https://something.com` will result in a line:
+        `rewrite ^/something$ https://something.com;` to be added to nginx
+        configuration.
    * TODO:
      - default index.html.j2 does not render any parameters, this might be
        reduced to a single copy.
