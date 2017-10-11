@@ -23,7 +23,15 @@
       owner: root
       mode: 0600
 
-- name: ensure .ssh exists
+- name: Create users
+  user:
+      name: "{{ item.login }}"
+      state: present
+      home: "{{ item.home }}"
+      shell: "{{ item.shell | default('/bin/bash') }}"
+  with_items: "{{ users_users | default([])}}"
+
+- name: ensure .ssh exists for admins, admin robots
   file:
       owner: "{{ item.login }}"
       group: "{{ item.login }}"
@@ -32,7 +40,16 @@
       mode: 0700
   with_items: "{{ users_administrators + users_admin_robots }}"
 
-- name: set authorized_keys file
+- name: ensure .ssh exists for users
+  file:
+      owner: "{{ item.login }}"
+      group: "{{ item.login }}"
+      path: "{{ item.home }}/.ssh"
+      state: directory
+      mode: 0700
+  with_items: "{{ users_users }}"
+
+- name: set authorized_keys file for admins, admin robots
   copy:
       owner: "{{ item.login }}"
       group: "{{ item.login }}"
@@ -40,3 +57,12 @@
       mode: 0644
       content: "{{ item.key }}"
   with_items: "{{ users_administrators + users_admin_robots }}"
+
+- name: set authorized_keys file for users
+  copy:
+      owner: "{{ item.login }}"
+      group: "{{ item.login }}"
+      dest: "{{ item.home }}/.ssh/authorized_keys"
+      mode: 0644
+      content: "{{ item.key }}"
+  with_items: "{{ users_users }}"

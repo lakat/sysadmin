@@ -97,6 +97,13 @@ short description for each:
      can log in and run sudo without the need for a password.
      - `login`: Username to be used
      - `key`: ssh key to be added to ~/.ssh/authorized_keys
+   * `users_users`: An array of dictionaries, each represent a user that
+     can log in to the system with an ssh key. Please do not forget to add the
+     user to the allowed_users in your ssh config should you have any.
+     - `login`: Username to be used
+     - `key`: ssh key to be added to ~/.ssh/authorized_keys
+     - `home`: Location for the user's home
+     - `shell`: Shell to be used for the user (defaults to `/bin/bash`)
  - logwatch: Add logwatch - no parameters
  - www: http server (nginx) with pluggable python applications - see pyapps
    * `www_default_root`: Default filesystem path for the default server.
