@@ -1,0 +1,10 @@
+---
+- name: Install git
+  apt:
+      name: git
+      state: present
+
+- name: Add git shell
+  lineinfile:
+      path: /etc/shells
+      line: /usr/bin/git-shell
