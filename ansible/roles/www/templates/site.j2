@@ -27,7 +27,11 @@ server {
 {% endfor %}
         deny all;
 {% endif %}
+{% if alias.noautoindex is defined and alias.noautoindex %}
+	    autoindex off;
+{% else %}
 	    autoindex on;
+{% endif %}
 	}
 {% endfor %}
 {% endif %}
@@ -76,7 +80,11 @@ server {
 {% endfor %}
         deny all;
 {% endif %}
+{% if alias.noautoindex is defined and alias.noautoindex %}
+	    autoindex off;
+{% else %}
 	    autoindex on;
+{% endif %}
 	}
 {% endfor %}
 {% endif %}

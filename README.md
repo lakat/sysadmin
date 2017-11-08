@@ -140,6 +140,8 @@ short description for each:
                        this will be open to public.
          - `allowed_hosts`: Optional list of hosts that you want to allow
                             access. If not specified, it will be open to public.
+         - `noautoindex`: Optional, by default it is False, set it to true to
+                          disable autoindex
       * `rewrites`: A list of custom strings. Refer to nginx's documentation on
         the format, see rewrite section. For example having the following value:
         `^/something$ https://something.com` will result in a line:
