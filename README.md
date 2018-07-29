@@ -66,6 +66,7 @@ short description for each:
        * `certificate`:
          - `path`: The path for the certificate on the system.
          - `content`: Contents of the certificate.
+       * `delete`: When true, this certificate will be removed from the system.
      - `dhparam`:
        * `path`: Path for the DHParams file
        * `content`: Contents of the DHparams file
@@ -234,4 +235,3 @@ to append a cert to the chain:
 
 Always do a check with:
 https://www.ssllabs.com/ssltest/analyze.html
-

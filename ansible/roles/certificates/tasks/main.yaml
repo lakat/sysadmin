@@ -1,16 +1,35 @@
 ---
-- name: Install private key
+- name: Delete private keys marked for removal
+  file:
+      path: "{{ item.value.private_key.path }}"
+      state: absent
+  when: item.value.delete is defined and item.value.delete
+  no_log: yes
+  with_dict:
+      "{{ certificates.certs }}"
+
+- name: Copy private key contents
   copy:
       content: "{{ item.value.private_key.content }}"
       dest: "{{ item.value.private_key.path }}"
       owner: root
       group: root
       mode: 0600
+  when: item.value.delete is not defined or (not item.value.delete)
   no_log: yes
   with_dict:
       "{{ certificates.certs }}"
 
-- name: Install certificate
+- name: Delete certificates marked for removal
+  file:
+      path: "{{ item.value.certificate.path }}"
+      state: absent
+  when: item.value.delete is defined and item.value.delete
+  no_log: yes
+  with_dict:
+      "{{ certificates.certs }}"
+
+- name: Install certificates
   copy:
       content: "{{ item.value.certificate.content }}"
       dest: "{{ item.value.certificate.path }}"
@@ -18,10 +37,11 @@
       group: root
       mode: 0644
   no_log: yes
+  when: item.value.delete is not defined or (not item.value.delete)
   with_dict:
       "{{ certificates.certs }}"
 
-- name: Install DH parameters
+- name: Install per-server DH parameters
   copy:
       content: "{{ certificates.dhparam.content }}"
       dest: "{{ certificates.dhparam.path }}"
