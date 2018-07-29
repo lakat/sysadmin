@@ -78,7 +78,6 @@
       owner: root
       group: root
       mode: 0644
-  notify: reload nginx
   with_items: "{{ www.sites }}"
 
 - name: Activate site
@@ -86,7 +85,32 @@
       path: "/etc/nginx/sites-enabled/{{ item.name }}"
       src: "/etc/nginx/sites-available/{{ item.name }}"
       state: link
+  notify: reload nginx
   with_items: "{{ www.sites }}"
+
+- name: Search for all enabled sites
+  find:
+     path: "/etc/nginx/sites-enabled"
+     recurse: no
+     file_type: "any"
+  register: all_enabled_sites
+
+- name: Make list of expected filenames for enabled sites
+  set_fact:
+      expected_files: "{{ expected_files | default(['/etc/nginx/sites-enabled/default']) }} + {{ ['/etc/nginx/sites-enabled/' + item.name] }}"
+  loop: "{{ www.sites }}"
+
+- name: Make list of existing files for enabled sites
+  set_fact:
+      existing_files: "{{ existing_files | default([]) }} + {{ [item.path] }}"
+  loop: "{{ all_enabled_sites.files }}"
+
+- name: Remove orphan files
+  file:
+      path: "{{ item }}"
+      state: absent
+  notify: reload nginx
+  loop: "{{ existing_files | difference(expected_files) }}"
 
 - name: Enable nginx
   service:
