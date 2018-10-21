@@ -1,4 +1,16 @@
 ---
+- name: Ensure www-editors group exists
+  group:
+      name: www-editors
+      state: present
+
+- name: Add users to www-editors
+  user:
+      name: "{{ item.user }}"
+      groups: www-editors
+      append: yes
+  with_items: "{{ www.editors }}"
+
 - name: Install nginx
   apt:
       name: nginx
@@ -46,8 +58,8 @@
       path: "{{ item.root }}"
       state: directory
       owner: root
-      group: root
-      mode: 0755
+      group: www-editors
+      mode: 0775
   with_items: "{{ www.sites }}"
 
 - name: Make pyapps configuration directoru

@@ -111,6 +111,9 @@ short description for each:
    * `www_dhparam_path`: Path for dhparam file. This is needed to make sure
      SSL is set up in a secure way.
    * `www`:
+     - `editors`: An array of dictionaries to specify users who can edit all
+       websites
+       * `user`: The username to be enabled for editing all sites.
      - `sites`: An array of dictionaries for each site as follows:
        * `name`: Name for the site
        * `root`: root path for the site
