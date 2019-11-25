@@ -9,4 +9,5 @@ virtualenv = {{ uwsgi_root }}/apps/{{ item.name }}/%(actual_revision)/venv
 processes = {{ item.processes }}
 chdir = {{ uwsgi_root }}/homes/{{ item.name }}
 paste = config:{{ uwsgi_root }}/apps/{{ item.name }}/%(actual_revision)/paste.ini
+paste-logger = 1
 chmod-socket = 666
